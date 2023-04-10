@@ -39,8 +39,8 @@ if __name__ == "__main__":
     console = Console(record=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data_dir", type=str, default="/home/ubuntu/mrqa-few-shot/")
-    parser.add_argument("--dataset_name", type=str, default="squad", choices=['bioasq' , 'hotpotqa', 'naturalquestions', 'newsqa ', 'searchqa', 'squad', 'textbookqa', 'triviaqa'])
+    parser.add_argument("--data_dir", type=str, default="/Users/oweysmomenzada/fewshotqa")
+    parser.add_argument("--dataset_name", type=str, default="data")
     parser.add_argument(
         "--gpu_id",
         default=0,
@@ -49,7 +49,15 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    device = f'cuda:{args.gpu_id}' if cuda.is_available() else 'cpu'
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    #used if m1 is utilized
+    elif torch.backends.mps.is_available():
+        device = torch.device("mps")
+    else:
+        device = torch.device("cpu")
+
+    console.print(f"You are currently working on the {device}")
 
     model_name = "facebook/bart-large"
     model_class = BartForConditionalGeneration
@@ -70,7 +78,7 @@ if __name__ == "__main__":
         "MODEL": model_name,  # model_type: bart-large etc
         "TRAIN_BATCH_SIZE": 2,  # training batch size
         "VALID_BATCH_SIZE": 32,  # validation batch size
-        "TRAIN_EPOCHS": 25,  # number of training epochs
+        "TRAIN_EPOCHS": 1,  # number of training epochs
         "VAL_EPOCHS": 1,  # number of validation epochs
         "LEARNING_RATE": 2e-5,  # learning rate
         "SEED": 42,  # set seed for reproducibility,
@@ -83,17 +91,17 @@ if __name__ == "__main__":
     for train_size in train_sizes:
         seed_f1s = []
         for data_seed in data_seeds:
-            console.print(f"Running {train_size} {data_seed}........................")
-            output_dir=f"{dataset_name}_seed_results/{train_size}_{data_seed}_{output_suffix}"
+            console.print(f"Running  training ........................")
+            output_dir=f"{dataset_name}_seed_results/{output_suffix}"
             os.makedirs(output_dir, exist_ok=True)
 
-            train_srcs, train_trgs = utils.get_data(f'{data_dir}/{dataset_name}/{dataset_name}-train-seed-{data_seed}-num-examples-{train_size}.jsonl', multi_answer=False)
-            _, train_multi_trgs = utils.get_data(f'{data_dir}/{dataset_name}/{dataset_name}-train-seed-{data_seed}-num-examples-{train_size}.jsonl', multi_answer=True)
+            train_srcs, train_trgs = utils.get_data(f'{data_dir}/{dataset_name}/trainsamples.jsonl', multi_answer=False)
+            _, train_multi_trgs = utils.get_data(f'{data_dir}/{dataset_name}/trainsamples.jsonl', multi_answer=True)
             train_samples = list(zip(train_srcs, train_trgs, train_multi_trgs))
 
             #For validation, we always use the seed 42 and size 1024 subset.
-            dev_srcs, dev_trgs = utils.get_data(f'{data_dir}/{dataset_name}/{dataset_name}-train-seed-42-num-examples-1024.jsonl', multi_answer=False)
-            _, dev_multi_trgs = utils.get_data(f'{data_dir}/{dataset_name}/{dataset_name}-train-seed-42-num-examples-1024.jsonl', multi_answer=True)
+            dev_srcs, dev_trgs = utils.get_data(f'{data_dir}/{dataset_name}/validation.jsonl', multi_answer=False)
+            _, dev_multi_trgs = utils.get_data(f'{data_dir}/{dataset_name}/validation.jsonl', multi_answer=True)
             dev_samples = list(zip(dev_srcs, dev_trgs, dev_multi_trgs))
             random.seed(42)
             random.shuffle(dev_samples)
@@ -147,4 +155,3 @@ if __name__ == "__main__":
 
             
     console.log(f"Took {(time.time() - start) / 60} minutes. ")
-

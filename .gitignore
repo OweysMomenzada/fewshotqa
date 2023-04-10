@@ -1,0 +1,7 @@
+__pycache__
+Dockerfile
+mrqa-few-shot.zip
+mrqa-few-shot
+data_qa_only
+data_seed_results
+.ipynb_checkpoints

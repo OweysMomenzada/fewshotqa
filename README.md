@@ -2,7 +2,6 @@
 
 Making the repository of [Amazon Science ](https://github.com/amazon-science/fewshotqa) more accessible to the user.
 
-
 ### Install prerequisits:
 Get the experiment files.
 
@@ -11,7 +10,11 @@ $ bash setup.sh
 ```
 
 Please install PyTorch seperatly based on the GPU or CPU you want to use.
-We optimize this repository based on the M1 Arm.
+We optimize this repository based on the M1 Max Arm architecture.
+
+### Results
+Using the SQuAD dataset with only 128 samples to train and only one epoch, we get an f1-score of $85.885$ on the validationset and an f1-score of $80.9$ on 10k+ trainsamples. 
+The training duration took approx. over 10 minutes, while the test duration over the 10k+ samples took over 25 minutes on the M1 Max Arm architecture.
 
 ### Cite authors
 
