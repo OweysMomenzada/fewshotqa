@@ -78,7 +78,7 @@ if __name__ == "__main__":
         "MODEL": model_name,  # model_type: bart-large etc
         "TRAIN_BATCH_SIZE": 2,  # training batch size
         "VALID_BATCH_SIZE": 32,  # validation batch size
-        "TRAIN_EPOCHS": 1,  # number of training epochs
+        "TRAIN_EPOCHS": 10,  # number of training epochs
         "VAL_EPOCHS": 1,  # number of validation epochs
         "LEARNING_RATE": 2e-5,  # learning rate
         "SEED": 42,  # set seed for reproducibility,
