@@ -27,6 +27,20 @@ $ uvicorn src.app:app --reload
 
 See ```http://127.0.0.1:8000/docs``` (if not specified otherwise) to see the documentation of the service.
 
+### Run it on Docker!
+Build image:
+```
+  $ docker build -t fewshotqa .
+```
+
+Run it:
+```
+  $ docker run -p 4200:4200 fewshotqa
+```
+
+It is then exposed on `http://localhost:4200`
+
+
 ### Cite authors
 
 ```
