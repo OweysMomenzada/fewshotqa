@@ -9,7 +9,6 @@ Get the experiment files.
 $ bash setup.sh
 ```
 
-Please install PyTorch seperatly based on the GPU or CPU you want to use.
 We optimize this repository based on the M1 Max Arm architecture.
 
 ### Results
