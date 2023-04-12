@@ -22,6 +22,7 @@ Per epoch, the training takes less than a minute, while the test duration over t
 Run the following line to expose the application on PORT 8000:
 
 ```
+$ cd src/fewshot_qa
 $ uvicorn src.app:app --reload 
 ```
 

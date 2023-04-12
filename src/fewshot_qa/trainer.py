@@ -8,16 +8,15 @@ https://github.com/huggingface/transformers
 https://github.com/Shivanandroy/T5-Finetuning-PyTorch
 '''
 
-# rich: for a better display on terminal
 from rich.table import Column, Table
 from rich import box
 from rich.console import Console
 
-from transformers import BartTokenizer, BartForConditionalGeneration
+from transformers import BartTokenizer
 from transformers import set_seed
 
 import torch
-from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampler
+from torch.utils.data import DataLoader
 
 import os
 import utils
@@ -29,7 +28,7 @@ import pandas as pd
 # define a rich console logger
 console = Console(record=True)
 
-MAX_GEN_LEN_TEST = 50
+MAX_GEN_LEN_TEST = 0
 
 
 def train(epoch, tokenizer, model, device, loader, optimizer, training_logger):
@@ -88,6 +87,7 @@ def validate(epoch, tokenizer, model, device, loader, max_gen_len=35):
               )
           preds = [tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=True) for g in generated_ids]
           target = [tokenizer.decode(t, skip_special_tokens=True, clean_up_tokenization_spaces=True) for t in y]
+
           if _%100==0:
               console.print(f'Completed {_}')
 

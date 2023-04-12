@@ -5,3 +5,4 @@ mrqa-few-shot
 data_qa_only
 data_seed_results
 .ipynb_checkpoints
+tmp.jsonl

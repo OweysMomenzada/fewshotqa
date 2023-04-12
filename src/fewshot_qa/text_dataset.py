@@ -9,8 +9,7 @@ https://github.com/Shivanandroy/T5-Finetuning-PyTorch
 '''
 
 import torch
-from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampler
-import utils
+from torch.utils.data import Dataset
 
 class TextDataset(Dataset):
     def __init__(

@@ -5,6 +5,8 @@ import jsonlines
 import json
 import os
 
+import fewshotqa
+
 app = FastAPI()
 
 class RequestJsonInsertion(BaseModel):
@@ -36,7 +38,7 @@ def insert_json_line(request: RequestJsonInsertion):
     "context": "Hey, I am Oweys. I am a Consultant at IBM.", 
     "qas": [
         {"question": "Who is Oweys?", 
-        "answers": ["a consultant at IBM."]}
+        "answers": ["a Consultant at IBM."]}
         ]
     }
     </pre>
@@ -45,7 +47,7 @@ def insert_json_line(request: RequestJsonInsertion):
     error_handling_jsonl(request)
     # get absolute path
     trainset_name = 'trainsamples.jsonl'
-    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', trainset_name))
+    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data', trainset_name))
     request_dict = request.dict()
 
     with jsonlines.open(data_path, mode='r') as reader:
@@ -74,18 +76,45 @@ def run_training():
 
 
 @app.post("/predict")
-def predict():
+def predict(request: RequestJsonInsertion):
     """
     Predicts based on a context and a question.
 
     <span style="color:red; font-size: 2em;">THIS IS STILL IN ACTIVE DEVELOPMENT</span>
-    """
 
-    return {"Answers": False}
+    Examples request
+    --------
+    <pre>
+    {
+    "context": "The construction of an report can cost over 100000 Euros.", 
+    "qas": [
+        {"question": "How much does a report cost?", 
+        "answers": [""]}
+        ]
+    }
+
+    
+    Example request 2
+    _________
+    {
+    "context": "The Amazon rainforest (Portuguese: Floresta Amazônica or Amazônia; Spanish: Selva Amazónica, Amazonía or usually Amazonia; French: Forêt amazonienne; Dutch: Amazoneregenwoud), also known in English as Amazonia or the Amazon Jungle, is a moist broadleaf forest that covers most of the Amazon basin of South America. This basin encompasses 7,000,000 square kilometres (2,700,000 sq mi), of which 5,500,000 square kilometres (2,100,000 sq mi) are covered by the rainforest.", 
+    "qas": [
+        {"question": "Which name is also used to describe the Amazon rainforest in English?", 
+        "answers": [""]}
+        ]
+    }
+    </pre>
+    """
+    # ToDo change base model to that, so empty answers do not need to be passed.
+    qamodel = fewshotqa.FewShotQA()
+    request_dict = request.dict()
+
+    pred = qamodel.help_function(request_dict)
+    return {"Answers": pred}
 
 
 def error_handling_jsonl(request : RequestJsonInsertion):
-
+    # ToDo check if answer is substring of context.
     try:
         data = json.loads(request.json())
         if not isinstance(data, dict):
